@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: strapi-config
+  labels:
+    {{- include "strapi.labels" . | nindent 4 }}
+data:
+  env.properties: |
+    DATABASE_CLIENT: {{.Values.db.client}}
+    DATABASE_NAME: {{.Values.db.name}}
+    DATABASE_PORT: {{.Values.db.port}}
+    PROXY_ENABLED: {{.Values.proxy.enabled}}
+    PROXY_SSL:  {{.Values.proxy.ssl}}
+    PROXY_DOMAIN: {{.Values.proxy.domain}}
+    PROXY_PORT: {{.Values.proxy.port}}

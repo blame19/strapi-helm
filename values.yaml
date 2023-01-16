@@ -8,13 +8,27 @@ replicaCount: 1
 #Had to make a kubernetes happy version of the strapi docker image.  Look here: https://github.com/ryuheiyokokawa/strapi-docker
 #Might have to host your own registry.  I based above on this: https://github.com/strapi/strapi-docker/strapi/
 image:
-  repository: registry.default.com/ry/strapi
+  repository: strapi
+  name: strapi
+  tag: latest
   pullPolicy: IfNotPresent
 
+#Registry credentials 
+#imagePullSecrets: 
+#  - name: regcred
+nameOverride: ""
+fullnameOverride: ""
+
+storage:
 #Used NFS as a datastore for this project since I already had a server running.
-nfs:
-  server: "nfs.default.com"
-  path: "/srv/strapi-store"
+#  nfs:
+#    server: "nfs.default.com"
+#    path: "/srv/strapi-store"
+  size: "10Gi"
+  # Change to Rwx once deployed EFS
+  accessMode: "ReadWriteOnce"
+  reclaimPolicy: "Delete"
+  scName: "gp2"
 
 #Strapi wants to know how its going to be exposed to the outside world through a proxy.
 proxy:
@@ -33,12 +47,6 @@ db:
   port: "3306"
   username: strapi
 
-#Registry credentials might be required if you have a private registry: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-imagePullSecrets: 
-  - name: regcred
-nameOverride: ""
-fullnameOverride: ""
-
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -51,18 +59,19 @@ serviceAccount:
 podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
 
-#Below is totally up to you. Could be nodeport or whatever you need.
 service:
   type: LoadBalancer
   port: 1337
+  annotations: []
+  labels: []
 
 #Make sure to set your host
 ingress:

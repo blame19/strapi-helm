@@ -1,14 +1,15 @@
+{{- with .Values.storage.nfs }} 
 apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: strapi-volume
 spec:
   capacity:
-    storage: 10Gi
+    storage: {{ $.Values.storage.size }}
   volumeMode: Filesystem
   accessModes:
-    - ReadWriteMany
+    - {{ $.Values.storage.accessMode }}
   nfs:
-    path: {{.Values.nfs.path}}
-    server: {{.Values.nfs.server}}
-  persistentVolumeReclaimPolicy: Retain
+    path: {{.path}}
+    server: {{.server}}
+{{- end }}

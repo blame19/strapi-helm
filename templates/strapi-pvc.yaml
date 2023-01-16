@@ -4,7 +4,8 @@ metadata:
   name: strapi-volume-claim
 spec:
   accessModes:
-    - ReadWriteMany
+    - {{ .Values.storage.accessMode }}
   resources:
     requests:
-      storage: 10Gi
+      storage: {{ .Values.storage.size }}
+  storageClassName: {{ .Values.storage.scName }}

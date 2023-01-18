@@ -1,4 +1,4 @@
-# Default values for strapi-ry.
+# Default values for strapi.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -25,7 +25,6 @@ storage:
 #    server: "nfs.default.com"
 #    path: "/srv/strapi-store"
   size: "10Gi"
-  # Change to Rwx once deployed EFS
   accessMode: "ReadWriteOnce"
   reclaimPolicy: "Delete"
   scName: "gp2"
@@ -34,7 +33,7 @@ storage:
 proxy:
   enabled: true
   ssl: true
-  domain: "strapi.default.com"
+  domain: "strapi.domain.com"
   port: 443
 
 #RDS or similar can be used here obviously.  Look at strapi's docs for more options: 
@@ -71,13 +70,16 @@ service:
   type: LoadBalancer
   port: 1337
   annotations: []
-  labels: []
+  type: LoadBalancer
+  port: 80
+  targetPort: 3000
+  loadBalancerSourceRanges: []
 
 #Make sure to set your host
 ingress:
   enabled: false
   hosts:
-    - host: strapi.default.com
+    - host: "strapi.domain.com"
       paths: []
   tls: []
   #  - secretName: chart-example-tls
@@ -85,16 +87,6 @@ ingress:
   #      - chart-example.local
 
 resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
 
 nodeSelector: {}
 
